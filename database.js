@@ -36,61 +36,67 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.execute = exports.data = void 0;
-var discord = require("discord.js");
-var blueAlliance = require("../blueAlliance");
-exports.data = new discord.SlashCommandBuilder()
-    .setName('getteamstats')
-    .setDescription('piss your\'e pant')
-    .addNumberOption(function (option) {
-    return option.setName("teamnumber")
-        .setDescription("HAHAHAHAAHAHAHAAAAAAAAAAAAAAAAAAAAAAAAA")
-        .setRequired(true);
+exports.getTeamData = exports.addNewTeamByBlueAlliance = exports.doesTeamExist = void 0;
+var mysql = require("mysql");
+var blueAlliance = require("./blueAlliance");
+var con = mysql.createConnection({
+    host: "192.168.1.247",
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASS,
+    database: "scouter"
 });
-function execute(interaction) {
+con.connect(function (err) {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log("MySQL connected successfully");
+    }
+});
+function doesTeamExist(teamNumber) {
+    var prom = new Promise(function (resolve, reject) {
+        con.query("SELECT * FROM teamData WHERE teamNumber=" + teamNumber, function (err, results, fields) {
+            resolve(results.length > 0);
+        });
+    });
+    return prom;
+}
+exports.doesTeamExist = doesTeamExist;
+function addNewTeamByBlueAlliance(teamNumber) {
     return __awaiter(this, void 0, void 0, function () {
-        var teamNumber, teamData, eventData, embed, eventName, fieldData, dataString, event_1, matches;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var teamData, _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    teamNumber = interaction.options.getNumber("teamnumber");
-                    return [4, blueAlliance.requestTeamData(teamNumber)];
+                    teamData = blueAlliance.requestTeamData(teamNumber);
+                    return [4, doesTeamExist(teamNumber)];
                 case 1:
-                    teamData = _a.sent();
-                    return [4, blueAlliance.requestEventData(teamNumber)];
+                    if (!!(_b.sent())) return [3, 3];
+                    _a = addNewTeam;
+                    return [4, teamData];
                 case 2:
-                    eventData = _a.sent();
-                    embed = new discord.EmbedBuilder()
-                        .setTitle(teamData.nickname);
-                    for (eventName in eventData) {
-                        if (eventData[eventName] == null) {
-                            continue;
-                        }
-                        fieldData = { name: eventName, value: "" };
-                        dataString = "";
-                        event_1 = eventData[eventName];
-                        if ("qual" in event_1) {
-                            if (event_1.qual != null) {
-                                matches = event_1.qual;
-                                dataString += "**__Qualifications__**\n";
-                                dataString += "**Wins**: " + matches.ranking.record.wins + '\n';
-                                dataString += "**Losses**: " + matches.ranking.record.losses + '\n';
-                                dataString += "**Draws**: " + matches.ranking.record.ties + '\n';
-                                dataString += "**Ranking**: " + matches.ranking.rank + "/" + matches.num_teams + '\n';
-                            }
-                            else {
-                                dataString += "Event has not started";
-                            }
-                        }
-                        fieldData.value = dataString;
-                        embed.addFields(fieldData);
-                    }
-                    return [4, interaction.reply({ embeds: [embed] })];
-                case 3:
-                    _a.sent();
-                    return [2];
+                    _a.apply(void 0, [_b.sent()]);
+                    _b.label = 3;
+                case 3: return [2];
             }
         });
     });
 }
-exports.execute = execute;
+exports.addNewTeamByBlueAlliance = addNewTeamByBlueAlliance;
+function addNewTeam(teamData) {
+    con.query("INSERT INTO teamData VALUES (" + teamData.team_number + ", \"" + teamData.nickname + "\", " + teamData.rookie_year + ")", function (err, results, fields) {
+        if (err)
+            console.log(err);
+    });
+}
+function getTeamData(teamNumber) {
+    var prom = new Promise(function (resolve, reject) {
+        con.query("SELECT * FROM teamData WHERE teamNumber=" + teamNumber, function (err, results, fields) {
+            if (err)
+                console.log(err);
+            resolve(results);
+        });
+    });
+    return prom;
+}
+exports.getTeamData = getTeamData;

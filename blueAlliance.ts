@@ -1,7 +1,5 @@
 import * as request from 'request';
 
-let teams: Team[] = [];
-
 let BLUE_ALLIANCE_API =  process.env.BLUE_ALLIANCE_API;
 
 export class Team {
@@ -18,7 +16,7 @@ export class EventData {
     gamesPlayed: number;
 }
 
-export type TeamData = {
+export type BlueTeamData = {
     key: string;
     team_number: number;
     nickname: string;
@@ -28,35 +26,33 @@ export type TeamData = {
     Error: string;
 }
 
-function teamDataCallback(err, res, body, callback: (data: TeamData) => any) {
-    callback(JSON.parse(body) as TeamData);
+export function requestTeamData(teamNumber: number): Promise<BlueTeamData> {
+    let prom = new Promise<BlueTeamData>((resolve, reject) => {
+        request({
+            headers: {
+                "Accept": "application/json",
+                "X-TBA-Auth-Key": BLUE_ALLIANCE_API
+            },
+            uri: "https://www.thebluealliance.com/api/v3/team/frc" + teamNumber,
+            method: "GET"
+        }, (err, res, body) => resolve(JSON.parse(body) as BlueTeamData));
+    });
+    return prom;
 }
 
-function eventDataCallback(err, res, body, callback: (data: EventData) => any) {
-    callback(JSON.parse(body));
-}
+export function requestEventData(teamNumber: number): Promise<EventData> {
+    let prom = new Promise<EventData>((resolve, reject) => {
+        let year: number = new Date().getFullYear();
 
-export function requestTeamData(teamNumber: number, callback: (data: TeamData) => any): void {
-    request({
-        headers: {
-            "Accept": "application/json",
-            "X-TBA-Auth-Key": BLUE_ALLIANCE_API
-        },
-        uri: "https://www.thebluealliance.com/api/v3/team/frc" + teamNumber,
-        method: "GET"
-    }, (err, res, body) => teamDataCallback(err, res, body, callback));
-}
-
-export function requestEventData(teamNumber: number, callback: (data: EventData) => any): void {
-    let year: number = new Date().getFullYear();
-
-    request({
-        headers: {
-            "Accept": "application/json",
-            "X-TBA-Auth-Key": BLUE_ALLIANCE_API
-        },
-        uri: "https://www.thebluealliance.com/api/v3/team/frc" + teamNumber + "/events/" + year + "/statuses",
-        method: "GET"
-    }, (err, res, body) => eventDataCallback(err, res, body, callback));
+        request({
+            headers: {
+                "Accept": "application/json",
+                "X-TBA-Auth-Key": BLUE_ALLIANCE_API
+            },
+            uri: "https://www.thebluealliance.com/api/v3/team/frc" + teamNumber + "/events/" + year + "/statuses",
+            method: "GET"
+        }, (err, res, body) => resolve(JSON.parse(body) as EventData));
+    });
+    return prom;
 }
 

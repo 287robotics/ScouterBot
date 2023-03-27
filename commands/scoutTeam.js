@@ -38,10 +38,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.execute = exports.data = void 0;
 var discord = require("discord.js");
-var blueAlliance = require("../blueAlliance");
 exports.data = new discord.SlashCommandBuilder()
-    .setName('getteamstats')
-    .setDescription('piss your\'e pant')
+    .setName('scoutteam')
+    .setDescription('piss your\'e pant AGIAN')
     .addNumberOption(function (option) {
     return option.setName("teamnumber")
         .setDescription("HAHAHAHAAHAHAHAAAAAAAAAAAAAAAAAAAAAAAAA")
@@ -49,47 +48,23 @@ exports.data = new discord.SlashCommandBuilder()
 });
 function execute(interaction) {
     return __awaiter(this, void 0, void 0, function () {
-        var teamNumber, teamData, eventData, embed, eventName, fieldData, dataString, event_1, matches;
+        var teamNumber, embed, row;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    teamNumber = interaction.options.getNumber("teamnumber");
-                    return [4, blueAlliance.requestTeamData(teamNumber)];
-                case 1:
-                    teamData = _a.sent();
-                    return [4, blueAlliance.requestEventData(teamNumber)];
-                case 2:
-                    eventData = _a.sent();
-                    embed = new discord.EmbedBuilder()
-                        .setTitle(teamData.nickname);
-                    for (eventName in eventData) {
-                        if (eventData[eventName] == null) {
-                            continue;
-                        }
-                        fieldData = { name: eventName, value: "" };
-                        dataString = "";
-                        event_1 = eventData[eventName];
-                        if ("qual" in event_1) {
-                            if (event_1.qual != null) {
-                                matches = event_1.qual;
-                                dataString += "**__Qualifications__**\n";
-                                dataString += "**Wins**: " + matches.ranking.record.wins + '\n';
-                                dataString += "**Losses**: " + matches.ranking.record.losses + '\n';
-                                dataString += "**Draws**: " + matches.ranking.record.ties + '\n';
-                                dataString += "**Ranking**: " + matches.ranking.rank + "/" + matches.num_teams + '\n';
-                            }
-                            else {
-                                dataString += "Event has not started";
-                            }
-                        }
-                        fieldData.value = dataString;
-                        embed.addFields(fieldData);
-                    }
-                    return [4, interaction.reply({ embeds: [embed] })];
-                case 3:
-                    _a.sent();
-                    return [2];
-            }
+            teamNumber = interaction.options.getNumber("teamnumber");
+            embed = new discord.EmbedBuilder()
+                .setTitle("Scouting " + teamNumber);
+            interaction.parent = { driveTrain: null, cycles: null, idealPlacement: null };
+            row = new discord.ActionRowBuilder()
+                .addComponents(new discord.StringSelectMenuBuilder()
+                .setCustomId('selections')
+                .setPlaceholder('Nothing selected')
+                .addOptions({
+                label: 'Game Pieces',
+                description: 'This is a description',
+                value: 'game_piece'
+            }));
+            interaction.reply({ embeds: [embed], components: [row] });
+            return [2];
         });
     });
 }

@@ -41,6 +41,7 @@ dotenv.config();
 var discord = require("discord.js");
 var fs = require("node:fs");
 var path = require("node:path");
+var interactionHandler = require("./interactionHandler");
 var DISCORD_BOT_API = process.env.DISCORD_BOT_API;
 var DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 var client = new discord.Client({ intents: [discord.GatewayIntentBits.Guilds] });
@@ -98,6 +99,16 @@ client.on(discord.Events.InteractionCreate, function (interaction) { return __aw
                 _a.label = 7;
             case 7: return [3, 8];
             case 8: return [2];
+        }
+    });
+}); });
+client.on(discord.Events.InteractionCreate, function (interaction) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4, interactionHandler.handleInteraction(interaction)];
+            case 1:
+                _a.sent();
+                return [2];
         }
     });
 }); });

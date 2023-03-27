@@ -5,7 +5,9 @@ import * as blueAlliance from './blueAlliance';
 import * as discord from "discord.js";
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as mysql from 'mysql';
+import * as interactionHandler from "./interactionHandler";
+import * as database from "./database";
+import { data } from 'jquery';
 
 let DISCORD_BOT_API = process.env.DISCORD_BOT_API;
 let DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
@@ -57,6 +59,10 @@ client.on(discord.Events.InteractionCreate, async interaction => {
 	}
 });
 
+client.on(discord.Events.InteractionCreate, async interaction => {	
+	await interactionHandler.handleInteraction(interaction);
+});
+
 (async () => {
 	try {
 		await rest.put(
@@ -67,24 +73,5 @@ client.on(discord.Events.InteractionCreate, async interaction => {
 		console.error(error)
 	}
 })();
-
-// let con = mysql.createConnection({
-// 	host: "192.168.1.247",
-// 	user: process.env.MYSQL_USER,
-// 	password: process.env.MYSQL_PASS,
-// 	database: "scouter"
-// });
-
-// con.connect((err) => {
-// 	if(err) {
-// 		console.log("fuck");
-// 		console.log(err);
-// 	} else {
-// 		con.query("SELECT * FROM teamData;", (err, results, fields) => {
-// 			if(err) console.log(err);
-// 			console.log(results[0]);
-// 		});
-// 	}
-// });
 
 client.login(DISCORD_BOT_API);

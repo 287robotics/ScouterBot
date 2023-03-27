@@ -12,13 +12,11 @@ export let data: discord.SlashCommandBuilder = new discord.SlashCommandBuilder()
 
 export async function execute(interaction) {
 	let teamNumber: number = interaction.options.getNumber("teamnumber");
-	blueAlliance.requestTeamData(teamNumber, async (teamData: blueAlliance.TeamData) => {
-	blueAlliance.requestEventData(teamNumber, async (eventData) => {
-		
-		const embed: discord.EmbedBuilder = new discord.EmbedBuilder()
-			.setTitle(teamData.nickname);
+	let teamData = await blueAlliance.requestTeamData(teamNumber);
+	let eventData = await blueAlliance.requestEventData(teamNumber);
 
-			console.log(eventData);
+	const embed: discord.EmbedBuilder = new discord.EmbedBuilder()
+			.setTitle(teamData.nickname);
 
 		for (const eventName in eventData) {
 			if (eventData[eventName] == null) {
@@ -30,12 +28,16 @@ export async function execute(interaction) {
 			let event = eventData[eventName];
 
 			if ("qual" in event) {
-				let matches = event.qual;
-				dataString += "**__Qualifications__**\n";
-				dataString += "**Wins**: " + matches.ranking.record.wins + '\n';
-				dataString += "**Losses**: " + matches.ranking.record.losses + '\n';
-				dataString += "**Draws**: " + matches.ranking.record.ties + '\n';
-				dataString += "**Ranking**: " + matches.ranking.rank + "/" + matches.num_teams + '\n';
+				if(event.qual != null) {
+					let matches = event.qual;
+					dataString += "**__Qualifications__**\n";
+					dataString += "**Wins**: " + matches.ranking.record.wins + '\n';
+					dataString += "**Losses**: " + matches.ranking.record.losses + '\n';
+					dataString += "**Draws**: " + matches.ranking.record.ties + '\n';
+					dataString += "**Ranking**: " + matches.ranking.rank + "/" + matches.num_teams + '\n';
+				} else {
+					dataString += "Event has not started";
+				}
 			}
 			
 			fieldData.value = dataString;
@@ -43,5 +45,4 @@ export async function execute(interaction) {
 		}
 
 		await interaction.reply({ embeds: [embed] });
-	})});
 }

@@ -1,6 +1,8 @@
 import *  as discord from "discord.js";
 import * as blueAlliance from "../blueAlliance";
 import * as database from "../database";
+import * as interactionHandler from "../interactionHandler";
+
 // @ts-ignore
 export let data: discord.SlashCommandBuilder = new discord.SlashCommandBuilder()
 		.setName('scoutpit')
@@ -31,9 +33,6 @@ export async function execute(interaction: discord.ChatInputCommandInteraction) 
 						}
 					),
 			);
-
-
-    interaction.reply({embeds: [embed], components: [row]} as discord.InteractionReplyOptions);
-
-
+	
+    let message: discord.InteractionResponse = await interaction.reply({embeds: [embed], components: [row]} as discord.InteractionReplyOptions);
 }

@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = exports.data = void 0;
 var discord = require("discord.js");
 exports.data = new discord.SlashCommandBuilder()
@@ -53,7 +53,7 @@ function execute(interaction) {
             teamNumber = interaction.options.getNumber("teamnumber");
             embed = new discord.EmbedBuilder()
                 .setTitle("Scouting " + teamNumber);
-            interaction.parent = { driveTrain: null, cycles: null, idealPlacement: null };
+            interaction;
             row = new discord.ActionRowBuilder()
                 .addComponents(new discord.StringSelectMenuBuilder()
                 .setCustomId('selections')
@@ -61,7 +61,7 @@ function execute(interaction) {
                 .addOptions({
                 label: 'Game Pieces',
                 description: 'This is a description',
-                value: 'game_piece'
+                value: 'game_piece',
             }));
             interaction.reply({ embeds: [embed], components: [row] });
             return [2];

@@ -10,13 +10,13 @@ export let data: discord.SlashCommandBuilder = new discord.SlashCommandBuilder()
 				.setDescription("HAHAHAHAAHAHAHAAAAAAAAAAAAAAAAAAAAAAAAA")
 				.setRequired(true));
 
-export async function execute(interaction) {
+export async function execute(interaction: discord.ChatInputCommandInteraction) {
 	let teamNumber: number = interaction.options.getNumber("teamnumber");
 	
     const embed: discord.EmbedBuilder = new discord.EmbedBuilder()
 			.setTitle("Scouting " + teamNumber);
 
-    interaction.parent = {driveTrain: null, cycles: null, idealPlacement: null};
+    interaction
     
     let row: discord.ActionRowBuilder = new discord.ActionRowBuilder()
 			.addComponents(
@@ -32,9 +32,7 @@ export async function execute(interaction) {
 					),
 			);
 
-
-    interaction.reply({embeds: [embed], components: [row]});
-
-
+			
+	interaction.reply({embeds: [embed], components: [row]} as discord.InteractionReplyOptions);
 }
 

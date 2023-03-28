@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.requestEventData = exports.requestTeamData = exports.EventData = exports.Team = void 0;
 var request = require("request");
 var BLUE_ALLIANCE_API = process.env.BLUE_ALLIANCE_API;

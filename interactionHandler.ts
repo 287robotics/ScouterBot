@@ -2,6 +2,31 @@ import * as discord from "discord.js";
 
 let interactionData = {};
 
+async function applyEmbedEdit(embedBuilder: discord.EmbedBuilder, interactionData) {
+    embedBuilder.setFields({name: "**__Game Pieces**__", value: 
+        ("**High Cone**: " + (interactionData.highCone ? "Yes" : "No") + "\n" +
+        "**Mid Cone**: " + (interactionData.midCone ? "Yes" : "No") + "\n" +
+        "**Low Cone**: " + (interactionData.lowCone ? "Yes" : "No") + "\n" +
+        "**High Cube**: " + (interactionData.highCube ? "Yes" : "No") + "\n" +
+        "**Mid Cube**: " + (interactionData.midCube ? "Yes" : "No") + "\n" +
+        "**Low Cube**: " + (interactionData.lowCube ? "Yes" : "No" )+ "\n" +
+        "**Cycles**: " + interactionData.cycles + "\n")
+    })
+}
+
+function initInteractionDataPit() {
+    let data: any = {}
+    data.highCone = false;
+    data.midCone = false;
+    data.lowCone = false;
+    data.highCube = false;
+    data.midCube = false;
+    data.lowCube = false;
+    data.cycles = 0;
+    
+    return data;
+}
+
 function getComponentById(components: discord.ActionRow<discord.MessageActionRowComponent>, id: string): any {
     for (let i = 0; i < components.components.length; i++) {
         if (components.components[i].customId == id) {
@@ -11,6 +36,9 @@ function getComponentById(components: discord.ActionRow<discord.MessageActionRow
 
     return null;
 }
+
+
+
 async function handlerButtonInteraction(interaction: discord.ButtonInteraction) {
     if (interaction["message"].interaction.commandName == "scout") {
         let message: discord.Message = interaction["message"];
@@ -22,31 +50,17 @@ async function handlerButtonInteraction(interaction: discord.ButtonInteraction) 
         
         function updateConeCube(id: string) {
             let rowBuilder: discord.ActionRowBuilder = null;
-            const indexes = {
-                "high_cone": 0,
-                "mid_cone": 1,
-                "low_cone": 2,
-                "high_cube": 0,
-                "mid_cube": 1,
-                "low_cube": 2,
-            }
+            const indexes = {"high_cone": 0, "mid_cone": 1, "low_cone": 2, "high_cube": 0, "mid_cube": 1, "low_cube": 2}
 
-            const vars = {
-                "high_cone": "highCone",
-                "mid_cone": "midCone",
-                "low_cone": "lowCone",
-                "high_cube": "highCube",
-                "mid_cube": "midCube",
-                "low_cube": "lowCube",
-            }
+            const vars = {"high_cone": "highCone", "mid_cone": "midCone", "low_cone": "lowCone", "high_cube": "highCube", "mid_cube": "midCube", "low_cube": "lowCube"}
 
             if (id.endsWith("cone")) {
                 rowBuilder = discord.ActionRowBuilder.from(message.components[0]);
-                rows.push(rowBuilder, message.components[1]);
+                rows.push(rowBuilder, message.components[1], message.components[2]);
 
             } else {
                 rowBuilder = discord.ActionRowBuilder.from(message.components[1]);
-                rows.push(message.components[0], rowBuilder);
+                rows.push(message.components[0], rowBuilder, message.components[2]);
             }
 
             if (interaction.component.style == discord.ButtonStyle.Secondary) {
@@ -64,7 +78,6 @@ async function handlerButtonInteraction(interaction: discord.ButtonInteraction) 
             updateConeCube(interaction.customId)
         }
         await interaction.update({content: ""});
-        console.log(interactionData[message.id]);
         rows.push(selectRow);
         // @ts-ignore
         message.edit({embeds: message.embeds, components: rows})
@@ -100,24 +113,31 @@ async function handlerStringSelectInteraction(interaction: discord.StringSelectM
         let value: string = interaction.values[0];
         let newEmbed: discord.EmbedBuilder = discord.EmbedBuilder.from(message.embeds[0]);
 
+        console.log(message.id);
+
         if (value == "game_piece") {
             let coneBuilder = new discord.ActionRowBuilder();
             let cubeBuilder = new discord.ActionRowBuilder();
+            let textBuilder = new discord.ActionRowBuilder();
 
+            function constructButton(id: string, label: string, key: string) {
+                let style: discord.ButtonStyle = discord.ButtonStyle.Secondary;
+                
+                if (interactionData[message.id][key]) {
+                    style = discord.ButtonStyle.Primary;
+                }
 
-            function constructButton(id: string, label: string) {
-                return new discord.ButtonBuilder().setCustomId(id).setLabel(label).setStyle(discord.ButtonStyle.Secondary);
+                return new discord.ButtonBuilder().setCustomId(id).setLabel(label).setStyle(style);
             }
-
             
-            coneBuilder.addComponents(constructButton("high_cone", "High Cone"));
-            coneBuilder.addComponents(constructButton("mid_cone", "Mid Cone"));
-            coneBuilder.addComponents(constructButton("low_cone", "Low Cone"));
-            cubeBuilder.addComponents(constructButton("high_cube", "High Cube"));
-            cubeBuilder.addComponents(constructButton("mid_cube", "Mid Cube"));
-            cubeBuilder.addComponents(constructButton("low_cube", "Low Cube"));
-            
-            rows.push(coneBuilder, cubeBuilder)
+            coneBuilder.addComponents(constructButton("high_cone", "High Cone", "highCone"));
+            coneBuilder.addComponents(constructButton("mid_cone", "Mid Cone", "midCone"));
+            coneBuilder.addComponents(constructButton("low_cone", "Low Cone", "lowCone"));
+            cubeBuilder.addComponents(constructButton("high_cube", "High Cube", "highCube"));
+            cubeBuilder.addComponents(constructButton("mid_cube", "Mid Cube", "midCube"));
+            cubeBuilder.addComponents(constructButton("low_cube", "Low Cube", "lowCone"));
+            coneBuilder.addComponents(new discord.ButtonBuilder().setCustomId("cycles_button").setStyle(discord.ButtonStyle.Primary));
+            rows.push(coneBuilder, cubeBuilder);
             
             newEmbed.setFooter({text: "Editing game piece data."});
         }
@@ -140,11 +160,25 @@ async function handlerStringSelectInteraction(interaction: discord.StringSelectM
 
     }
 }
+
+async function handleChatInputCommandInteraction(interaction: discord.ChatInputCommandInteraction) {
+    if (interaction.commandName == "scout") {
+        let message: discord.Message = await interaction.fetchReply();
+        interactionData[message.id] = initInteractionDataPit(); 
+        let embedBuilder: discord.EmbedBuilder = discord.EmbedBuilder.from(message.embeds[0]);
+        await applyEmbedEdit(embedBuilder, interactionData[message.id]);
+        await message.edit({embeds: [embedBuilder]});
+        console.log("?");
+    }
+}
+
 export async function handleInteraction(interaction: discord.Interaction) {
-    console.log(interaction.isButton());
     if (interaction.isStringSelectMenu()) {
         await handlerStringSelectInteraction(interaction);
     } else if (interaction.isButton()) {
         await handlerButtonInteraction(interaction);
+    } else if (interaction.isChatInputCommand()) {
+        await handleChatInputCommandInteraction(interaction);
     }
+
 }

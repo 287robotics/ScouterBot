@@ -90,13 +90,34 @@ function addNewTeam(teamData) {
     });
 }
 function getTeamData(teamNumber) {
-    var prom = new Promise(function (resolve, reject) {
-        con.query("SELECT * FROM teamData WHERE teamNumber=" + teamNumber, function (err, results, fields) {
-            if (err)
-                console.log(err);
-            resolve(results);
+    return __awaiter(this, void 0, void 0, function () {
+        var prom;
+        var _this = this;
+        return __generator(this, function (_a) {
+            prom = new Promise(function (resolve, reject) {
+                con.query("SELECT * FROM teamData WHERE teamNumber=" + teamNumber, function (err, results, fields) { return __awaiter(_this, void 0, void 0, function () {
+                    var td;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (err)
+                                    console.log(err);
+                                if (!(results.length > 0)) return [3, 1];
+                                resolve(results[0]);
+                                return [3, 3];
+                            case 1: return [4, blueAlliance.requestTeamData(teamNumber)];
+                            case 2:
+                                td = _a.sent();
+                                resolve({ teamNumber: td.team_number, teamName: td.nickname, rookieYear: td.rookie_year });
+                                addNewTeam(td);
+                                _a.label = 3;
+                            case 3: return [2];
+                        }
+                    });
+                }); });
+            });
+            return [2, prom];
         });
     });
-    return prom;
 }
 exports.getTeamData = getTeamData;

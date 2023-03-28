@@ -12,7 +12,7 @@ function getComponentById(components: discord.ActionRow<discord.MessageActionRow
     return null;
 }
 async function handlerButtonInteraction(interaction: discord.ButtonInteraction) {
-    if (interaction["message"].interaction.commandName == "scoutteam") {
+    if (interaction["message"].interaction.commandName == "scout") {
         let message: discord.Message = interaction["message"];
         
         let rows = [];
@@ -74,7 +74,7 @@ async function handlerButtonInteraction(interaction: discord.ButtonInteraction) 
 }
 
 async function handlerStringSelectInteraction(interaction: discord.StringSelectMenuInteraction) {
-    if (interaction["message"].interaction.commandName == "scoutteam") {
+    if (interaction["message"].interaction.commandName == "scout") {
         let message: discord.Message = interaction["message"];
         let selectRow: discord.ActionRow<discord.MessageActionRowComponent> = null;
         let selectMenu: any = null;

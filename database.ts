@@ -1,3 +1,4 @@
+import { Team } from 'discord.js';
 import * as mysql from 'mysql';
 import * as blueAlliance from './blueAlliance';
 
@@ -5,7 +6,24 @@ type TeamData = {
     teamNumber: number;
     teamName: string;
     rookieYear: number;
-}; 
+};
+
+type BotData = {
+    teamNumber: number;
+    substation: number;
+    drivetrain: number;
+    autoBalance: boolean;
+    autoMobility: boolean;
+    autoDeliver: number;
+    autoNote: string;
+    piecePreference: number;
+    firstPlacement: number;
+    secondPlacement: number;
+    cyclesPerMatch: number;
+    canScoreHigh: boolean;
+    canScoreMid: boolean;
+    canScoreLow: boolean;
+};
 
 let con = mysql.createConnection({
 	host: "192.168.1.247",
@@ -62,11 +80,17 @@ function addNewTeam(teamData: blueAlliance.BlueTeamData): void {
  * @param teamNumber Team Number
  * @returns Promise for the TeamData object containing the information
  */
-export function getTeamData(teamNumber: number): Promise<TeamData> {
+export async function getTeamData(teamNumber: number): Promise<TeamData> {
     let prom = new Promise<TeamData>((resolve, reject) => {
-        con.query("SELECT * FROM teamData WHERE teamNumber=" + teamNumber, (err, results, fields) => {
+        con.query("SELECT * FROM teamData WHERE teamNumber=" + teamNumber, async (err, results, fields) => {
             if(err) console.log(err);
-            resolve(results as TeamData);
+            if(results.length > 0) {
+                resolve(results[0] as TeamData);
+            } else {
+                let td = await blueAlliance.requestTeamData(teamNumber);
+                resolve({teamNumber: td.team_number, teamName: td.nickname, rookieYear: td.rookie_year} as TeamData);
+                addNewTeam(td);
+            }
         });
     });
     return prom;

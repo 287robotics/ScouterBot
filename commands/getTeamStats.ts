@@ -10,8 +10,8 @@ export let data: discord.SlashCommandBuilder = new discord.SlashCommandBuilder()
 				.setDescription("HAHAHAHAAHAHAHAAAAAAAAAAAAAAAAAAAAAAAAA")
 				.setRequired(true));
 
-export async function execute(interaction) {
-	let teamNumber: number = interaction.options.getNumber("teamnumber");
+export async function execute(interaction: discord.ChatInputCommandInteraction) {
+	let teamNumber = interaction.options.getNumber("teamnumber");
 	let teamData = await blueAlliance.requestTeamData(teamNumber);
 	let eventData = await blueAlliance.requestEventData(teamNumber);
 

@@ -3,7 +3,7 @@ import * as blueAlliance from "../blueAlliance";
 import * as main from "../main";
 // @ts-ignore
 export let data: discord.SlashCommandBuilder = new discord.SlashCommandBuilder()
-		.setName('scoutteam')
+		.setName('scout')
 		.setDescription('piss your\'e pant AGIAN')
 		.addNumberOption(option =>
 			option.setName("teamnumber")

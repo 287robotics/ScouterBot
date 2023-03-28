@@ -88,7 +88,7 @@ function handlerButtonInteraction(interaction) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(interaction["message"].interaction.commandName == "scoutteam")) return [3, 2];
+                    if (!(interaction["message"].interaction.commandName == "scout")) return [3, 2];
                     message_1 = interaction["message"];
                     rows_1 = [];
                     selectRow = message_1.components[message_1.components.length - 1];
@@ -116,7 +116,7 @@ function handlerStringSelectInteraction(interaction) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(interaction["message"].interaction.commandName == "scoutteam")) return [3, 2];
+                    if (!(interaction["message"].interaction.commandName == "scout")) return [3, 2];
                     message = interaction["message"];
                     selectRow = null;
                     selectMenu = null;

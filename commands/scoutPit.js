@@ -39,11 +39,11 @@ exports.__esModule = true;
 exports.execute = exports.data = void 0;
 var discord = require("discord.js");
 exports.data = new discord.SlashCommandBuilder()
-    .setName('scoutteam')
-    .setDescription('piss your\'e pant AGIAN')
+    .setName('scoutpit')
+    .setDescription('piss in the ball pit')
     .addNumberOption(function (option) {
     return option.setName("teamnumber")
-        .setDescription("HAHAHAHAAHAHAHAAAAAAAAAAAAAAAAAAAAAAAAA")
+        .setDescription("Cloth Gowns")
         .setRequired(true);
 });
 function execute(interaction) {
@@ -53,7 +53,6 @@ function execute(interaction) {
             teamNumber = interaction.options.getNumber("teamnumber");
             embed = new discord.EmbedBuilder()
                 .setTitle("Scouting " + teamNumber);
-            interaction.parent = { driveTrain: null, cycles: null, idealPlacement: null };
             row = new discord.ActionRowBuilder()
                 .addComponents(new discord.StringSelectMenuBuilder()
                 .setCustomId('selections')

@@ -7,7 +7,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as interactionHandler from "./interactionHandler";
 import * as database from "./database";
-import { data } from 'jquery';
+import * as stats from "./statbotics";
+
 
 let DISCORD_BOT_API = process.env.DISCORD_BOT_API;
 let DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
@@ -19,6 +20,8 @@ const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('
 const commands: discord.Collection<string, any> = new discord.Collection();
 const jsonCommands: string[] = [];
 const rest: discord.REST = new discord.REST({ version: "10"}).setToken(DISCORD_BOT_API);
+
+interactionHandler.setClient(client);
 
 for (const file of commandFiles) {
 	const filePath = path.join(commandsPath, file);

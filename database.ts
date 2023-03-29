@@ -23,7 +23,35 @@ type BotData = {
     canScoreHigh: boolean;
     canScoreMid: boolean;
     canScoreLow: boolean;
+    scouter: number;
 };
+
+type GridData = {
+    low: number;
+    mid: number;
+    high: number;
+}
+
+type ModeData = {
+    cubes: GridData;
+    cones: GridData;
+    onCharge: boolean;
+    balance: boolean;
+    totalPoints: number;
+    notes: string;
+}
+
+type MatchData = {
+    teamNumber: number;
+    qualNumber: number;
+    autoJson: ModeData;
+    teleJson: ModeData;
+    mobility: boolean;
+    startingGrid: number;
+    substation: number;
+    cycleTime: number;
+    scouter: number;
+}
 
 let con = mysql.createConnection({
 	host: "192.168.1.247",
@@ -90,6 +118,81 @@ export async function getTeamData(teamNumber: number): Promise<TeamData> {
                 let td = await blueAlliance.requestTeamData(teamNumber);
                 resolve({teamNumber: td.team_number, teamName: td.nickname, rookieYear: td.rookie_year} as TeamData);
                 addNewTeam(td);
+            }
+        });
+    });
+    return prom;
+}
+
+export function addMatchRecord(data: MatchData) {
+    con.query("INSERT INTO matchData VALUES (" + data.teamNumber + 
+    ", " + data.qualNumber + 
+    ", \"" + JSON.stringify(data.autoJson).replaceAll("\"", "\\\"") + 
+    "\", \"" + JSON.stringify(data.teleJson).replaceAll("\"", "\\\"") +
+    "\", " + data.mobility +
+    ", " + data.startingGrid +
+    ", " + data.substation + 
+    ", " + data.cycleTime +
+    ", " + data.scouter + 
+    ")", (err, results, fields) => {
+        if(err) console.log(err);
+    });
+}
+
+/**
+ * Gets the data for a past qualification round
+ * @param teamNumber Team Number
+ * @param qualNumber The Qualification Match number
+ * @returns Promise for the MatchData object containing the information
+ */
+export async function getMatchData(teamNumber: number, qualNumber: number): Promise<MatchData> {
+    let prom = new Promise<MatchData>((resolve, reject) => {
+        con.query("SELECT * FROM matchData WHERE teamNumber=" + teamNumber + " AND qualNumber=" + qualNumber, async (err, results, fields) => {
+            if(err) console.log(err);
+            if(results.length > 0) {
+                resolve(results[0] as MatchData);
+            } else {
+                resolve({} as MatchData);
+            }
+        });
+    });
+    return prom;
+}
+
+export function addBotData(data: BotData) {
+    con.query("INSERT INTO matchData VALUES (" + data.teamNumber + 
+    ", " + data.substation + 
+    ", " + data.drivetrain + 
+    ", " + data.autoBalance +
+    ", " + data.autoMobility +
+    ", " + data.autoDeliver +
+    ", \"" + data.autoNote + 
+    "\", " + data.piecePreference +
+    ", " + data.firstPlacement + 
+    ", " + data.secondPlacement + 
+    ", " + data.cyclesPerMatch + 
+    ", " + data.canScoreHigh + 
+    ", " + data.canScoreMid + 
+    ", " + data.canScoreLow +
+    ", " + data.scouter +  
+    ")", (err, results, fields) => {
+        if(err) console.log(err);
+    });
+}
+
+/**
+ * Gets the data for a bot scouted in the pit
+ * @param teamNumber Team Number
+ * @returns Promise for the BotData object containing the information
+ */
+export async function getBotData(teamNumber: number): Promise<BotData> {
+    let prom = new Promise<BotData>((resolve, reject) => {
+        con.query("SELECT * FROM botData WHERE teamNumber=" + teamNumber, async (err, results, fields) => {
+            if(err) console.log(err);
+            if(results.length > 0) {
+                resolve(results[0] as BotData);
+            } else {
+                resolve({} as BotData);
             }
         });
     });

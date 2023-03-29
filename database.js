@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+        while (_) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -35,8 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTeamData = exports.addNewTeamByBlueAlliance = exports.doesTeamExist = void 0;
+exports.__esModule = true;
+exports.getBotData = exports.addBotData = exports.getMatchData = exports.addMatchRecord = exports.getTeamData = exports.addNewTeamByBlueAlliance = exports.doesTeamExist = void 0;
 var mysql = require("mysql");
 var blueAlliance = require("./blueAlliance");
 var con = mysql.createConnection({
@@ -121,3 +121,91 @@ function getTeamData(teamNumber) {
     });
 }
 exports.getTeamData = getTeamData;
+function addMatchRecord(data) {
+    con.query("INSERT INTO matchData VALUES (" + data.teamNumber +
+        ", " + data.qualNumber +
+        ", \"" + JSON.stringify(data.autoJson).replaceAll("\"", "\\\"") +
+        "\", \"" + JSON.stringify(data.teleJson).replaceAll("\"", "\\\"") +
+        "\", " + data.mobility +
+        ", " + data.startingGrid +
+        ", " + data.substation +
+        ", " + data.cycleTime +
+        ", " + data.scouter +
+        ")", function (err, results, fields) {
+        if (err)
+            console.log(err);
+    });
+}
+exports.addMatchRecord = addMatchRecord;
+function getMatchData(teamNumber, qualNumber) {
+    return __awaiter(this, void 0, void 0, function () {
+        var prom;
+        var _this = this;
+        return __generator(this, function (_a) {
+            prom = new Promise(function (resolve, reject) {
+                con.query("SELECT * FROM matchData WHERE teamNumber=" + teamNumber + " AND qualNumber=" + qualNumber, function (err, results, fields) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        if (err)
+                            console.log(err);
+                        if (results.length > 0) {
+                            resolve(results[0]);
+                        }
+                        else {
+                            resolve({});
+                        }
+                        return [2];
+                    });
+                }); });
+            });
+            return [2, prom];
+        });
+    });
+}
+exports.getMatchData = getMatchData;
+function addBotData(data) {
+    con.query("INSERT INTO matchData VALUES (" + data.teamNumber +
+        ", " + data.substation +
+        ", " + data.drivetrain +
+        ", " + data.autoBalance +
+        ", " + data.autoMobility +
+        ", " + data.autoDeliver +
+        ", \"" + data.autoNote +
+        "\", " + data.piecePreference +
+        ", " + data.firstPlacement +
+        ", " + data.secondPlacement +
+        ", " + data.cyclesPerMatch +
+        ", " + data.canScoreHigh +
+        ", " + data.canScoreMid +
+        ", " + data.canScoreLow +
+        ", " + data.scouter +
+        ")", function (err, results, fields) {
+        if (err)
+            console.log(err);
+    });
+}
+exports.addBotData = addBotData;
+function getBotData(teamNumber) {
+    return __awaiter(this, void 0, void 0, function () {
+        var prom;
+        var _this = this;
+        return __generator(this, function (_a) {
+            prom = new Promise(function (resolve, reject) {
+                con.query("SELECT * FROM botData WHERE teamNumber=" + teamNumber, function (err, results, fields) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        if (err)
+                            console.log(err);
+                        if (results.length > 0) {
+                            resolve(results[0]);
+                        }
+                        else {
+                            resolve({});
+                        }
+                        return [2];
+                    });
+                }); });
+            });
+            return [2, prom];
+        });
+    });
+}
+exports.getBotData = getBotData;

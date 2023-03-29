@@ -38,68 +38,35 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.execute = exports.data = void 0;
 var discord = require("discord.js");
-var interactionHandler = require("../interactionHandler");
+var stats = require("../statbotics");
 exports.data = new discord.SlashCommandBuilder()
-    .setName('scout')
-    .setDescription('piss your\'e pant AGIAN')
+    .setName('predict')
+    .setDescription('get match prediction from statbotics')
     .addNumberOption(function (option) {
-    return option.setName("teamnumber")
-        .setDescription("HAHAHAHAAHAHAHAAAAAAAAAAAAAAAAAAAAAAAAA")
+    return option.setName("matchnumber")
+        .setDescription("number of the match")
         .setRequired(true);
 });
 function execute(interaction) {
     return __awaiter(this, void 0, void 0, function () {
-        var teamNumber, embed, row, message, message;
+        var matchNumber, matchData, embed;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    teamNumber = interaction.options.getNumber("teamnumber");
-                    embed = new discord.EmbedBuilder()
-                        .setTitle("Scouting " + teamNumber);
-                    row = new discord.ActionRowBuilder()
-                        .addComponents(new discord.StringSelectMenuBuilder()
-                        .setCustomId('selections')
-                        .setPlaceholder('Nothing selected')
-                        .addOptions({
-                        label: 'TeleOp',
-                        description: 'This is a description',
-                        value: 'game_data'
-                    }, {
-                        label: 'Game Pieces',
-                        description: 'This is a description',
-                        value: 'game_piece'
-                    }, {
-                        label: "Autonomous",
-                        description: "FUCK YOU",
-                        value: "autonomous"
-                    }, {
-                        label: "Notes",
-                        description: "FUCK YOU TOO",
-                        value: "notes"
-                    }));
-                    if (!(interaction.channel != null && !interaction.channel.isDMBased())) return [3, 2];
-                    return [4, interaction.user.send({ embeds: [embed], components: [row] })];
+                    matchNumber = interaction.options.getNumber("matchnumber");
+                    return [4, stats.requestMatchData(matchNumber)];
                 case 1:
-                    message = _a.sent();
-                    interactionHandler.commandMessages[message.id] = {};
-                    interactionHandler.commandMessages[message.id].command = "scout";
-                    interactionHandler.doDmInit(message, teamNumber);
-                    interaction.reply({ content: "Scout sheet has been sent to your dm", ephemeral: true });
-                    return [3, 6];
-                case 2: return [4, interaction.user.send({ embeds: [embed], components: [row] })];
-                case 3:
-                    message = _a.sent();
-                    interactionHandler.commandMessages[message.id] = {};
-                    interactionHandler.commandMessages[message.id].command = "scout";
-                    interactionHandler.doDmInit(message, teamNumber);
-                    return [4, interaction.deferReply()];
-                case 4:
+                    matchData = _a.sent();
+                    embed = new discord.EmbedBuilder()
+                        .setTitle("Qualification " + matchNumber + " Predictions by Statbotics");
+                    embed.addFields({ name: "Winner:", value: (matchData.epa_winner == "red" ? "Red" : "Blue") + " - " +
+                            Math.round((matchData.epa_winner == "red" ? matchData.epa_win_prob : (1 - matchData.epa_win_prob)) * 100) + "% certainty" });
+                    embed.addFields({ name: "Scores:", value: "Red: " + Math.round(matchData.red_epa_sum) + "\nBlue: " + Math.round(matchData.blue_epa_sum) });
+                    console.log(matchData);
+                    return [4, interaction.reply({ embeds: [embed] })];
+                case 2:
                     _a.sent();
-                    return [4, interaction.deleteReply()];
-                case 5:
-                    _a.sent();
-                    _a.label = 6;
-                case 6: return [2];
+                    return [2];
             }
         });
     });

@@ -1,8 +1,9 @@
 import *  as discord from "discord.js";
 import * as blueAlliance from "../blueAlliance";
 import * as main from "../main";
-// @ts-ignore
-export let data: discord.SlashCommandBuilder = new discord.SlashCommandBuilder()
+import * as interactionHandler from "../interactionHandler";
+
+export let data = new discord.SlashCommandBuilder()
 		.setName('scout')
 		.setDescription('piss your\'e pant AGIAN')
 		.addNumberOption(option =>
@@ -16,23 +17,54 @@ export async function execute(interaction: discord.ChatInputCommandInteraction) 
     const embed: discord.EmbedBuilder = new discord.EmbedBuilder()
 			.setTitle("Scouting " + teamNumber);
 
-    interaction
     
-    let row: discord.ActionRowBuilder = new discord.ActionRowBuilder()
+    let row = new discord.ActionRowBuilder<discord.MessageActionRowComponentBuilder>()
 			.addComponents(
 				new discord.StringSelectMenuBuilder()
 					.setCustomId('selections')
 					.setPlaceholder('Nothing selected')
 					.addOptions(
 						{
+							label: 'TeleOp',
+							description: 'This is a description',
+							value: 'game_data',
+						},
+						{
 							label: 'Game Pieces',
 							description: 'This is a description',
 							value: 'game_piece',
+						},
+						{
+							label: "Autonomous",
+							description: "FUCK YOU",
+							value: "autonomous"
+						},
+						{
+							label: "Notes",
+							description: "FUCK YOU TOO",
+							value: "notes"
 						}
 					),
 			);
 
-			
-	interaction.reply({embeds: [embed], components: [row]} as discord.InteractionReplyOptions);
+	if (interaction.channel != null && !interaction.channel.isDMBased()) {
+		let message: discord.Message = await interaction.user.send({embeds: [embed], components: [row]});
+		
+		interactionHandler.commandMessages[message.id] = {}
+		interactionHandler.commandMessages[message.id].command = "scout"
+
+		interactionHandler.doDmInit(message, teamNumber);
+		
+		interaction.reply({content: "Scout sheet has been sent to your dm", ephemeral: true});
+	} else {
+		let message: discord.Message = await interaction.user.send({embeds: [embed], components: [row]});
+		
+		interactionHandler.commandMessages[message.id] = {}
+		interactionHandler.commandMessages[message.id].command = "scout"
+		interactionHandler.doDmInit(message, teamNumber);
+		
+		await interaction.deferReply();
+		await interaction.deleteReply();
+	}
 }
 

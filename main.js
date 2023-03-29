@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+        while (_) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var dotenv = require("dotenv");
 dotenv.config();
 var discord = require("discord.js");
@@ -50,6 +50,7 @@ var commandFiles = fs.readdirSync(commandsPath).filter(function (file) { return 
 var commands = new discord.Collection();
 var jsonCommands = [];
 var rest = new discord.REST({ version: "10" }).setToken(DISCORD_BOT_API);
+interactionHandler.setClient(client);
 for (var _i = 0, commandFiles_1 = commandFiles; _i < commandFiles_1.length; _i++) {
     var file = commandFiles_1[_i];
     var filePath = path.join(commandsPath, file);
@@ -60,11 +61,11 @@ for (var _i = 0, commandFiles_1 = commandFiles; _i < commandFiles_1.length; _i++
         jsonCommands.push(command.data.toJSON());
     }
     else {
-        console.log("[WARNING] The command at ".concat(filePath, " is missing a required \"data\" or \"execute\" property."));
+        console.log("[WARNING] The command at " + filePath + " is missing a required \"data\" or \"execute\" property.");
     }
 }
 client.once(discord.Events.ClientReady, function (c) {
-    console.log("Ready! Logged in as ".concat(c.user.tag));
+    console.log("Ready! Logged in as " + c.user.tag);
 });
 client.on(discord.Events.InteractionCreate, function (interaction) { return __awaiter(void 0, void 0, void 0, function () {
     var command, error_1;
@@ -75,7 +76,7 @@ client.on(discord.Events.InteractionCreate, function (interaction) { return __aw
                     return [2];
                 command = commands.get(interaction.commandName);
                 if (!command) {
-                    console.error("No command matching ".concat(interaction.commandName, " was found."));
+                    console.error("No command matching " + interaction.commandName + " was found.");
                     return [2];
                 }
                 _a.label = 1;

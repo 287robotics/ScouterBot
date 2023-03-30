@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -35,10 +35,42 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
-exports.getBotData = exports.addBotData = exports.getMatchData = exports.addMatchRecord = exports.getTeamData = exports.addNewTeamByBlueAlliance = exports.doesTeamExist = void 0;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getBotData = exports.addBotData = exports.getBotNotes = exports.getBotStats = exports.getMatchData = exports.addMatchRecord = exports.getTeamData = exports.addNewTeamByBlueAlliance = exports.doesTeamExist = exports.MatchData = exports.BotData = void 0;
 var mysql = require("mysql");
 var blueAlliance = require("./blueAlliance");
+var BotData = (function () {
+    function BotData(row) {
+        this.teamNumber = row.teamNumber;
+        this.autoJson = JSON.parse(row.autoJson);
+        this.teleJson = JSON.parse(row.teleJson);
+        this.mobility = row.mobility;
+        this.startingGrid = row.startingGrid;
+        this.substation = row.substation;
+        this.cycleTime = row.cycleTime;
+        this.scouter = row.scouter;
+        this.drivetrain = row.drivetrain;
+        this.botNote = row.botNote;
+    }
+    return BotData;
+}());
+exports.BotData = BotData;
+;
+var MatchData = (function () {
+    function MatchData(row) {
+        this.teamNumber = row.teamNumber;
+        this.qualNumber = row.qualNumber;
+        this.autoJson = JSON.parse(row.autoJson);
+        this.teleJson = JSON.parse(row.teleJson);
+        this.mobility = row.mobility;
+        this.startingGrid = row.startingGrid;
+        this.substation = row.substation;
+        this.cycleTime = row.cycleTime;
+        this.scouter = row.scouter;
+    }
+    return MatchData;
+}());
+exports.MatchData = MatchData;
 var con = mysql.createConnection({
     host: "192.168.1.247",
     user: process.env.MYSQL_USER,
@@ -148,7 +180,7 @@ function getMatchData(teamNumber, qualNumber) {
                         if (err)
                             console.log(err);
                         if (results.length > 0) {
-                            resolve(results[0]);
+                            resolve(new MatchData(results[0]));
                         }
                         else {
                             resolve({});
@@ -162,23 +194,151 @@ function getMatchData(teamNumber, qualNumber) {
     });
 }
 exports.getMatchData = getMatchData;
+function getBotStats(teamNumber) {
+    return __awaiter(this, void 0, void 0, function () {
+        var prom;
+        var _this = this;
+        return __generator(this, function (_a) {
+            prom = new Promise(function (resolve, reject) {
+                con.query("SELECT * FROM matchData WHERE teamNumber=" + teamNumber, function (err, results, fields) { return __awaiter(_this, void 0, void 0, function () {
+                    var botStats, i, data;
+                    return __generator(this, function (_a) {
+                        if (err)
+                            console.log(err);
+                        if (results.length > 0) {
+                            botStats = {
+                                teamNumber: teamNumber,
+                                avgConesAuto: {
+                                    low: 0,
+                                    mid: 0,
+                                    high: 0
+                                },
+                                avgConesTele: {
+                                    low: 0,
+                                    mid: 0,
+                                    high: 0
+                                },
+                                avgCubesAuto: {
+                                    low: 0,
+                                    mid: 0,
+                                    high: 0
+                                },
+                                avgCubesTele: {
+                                    low: 0,
+                                    mid: 0,
+                                    high: 0
+                                },
+                                avgCycles: 0,
+                                charge: 0,
+                                balance: 0,
+                                autoCharge: false,
+                                autoBalance: false,
+                                autoMobility: false
+                            };
+                            for (i = 0; i < results.length; i++) {
+                                data = new MatchData(results[i]);
+                                botStats.avgConesAuto.high += data.autoJson.cones.high;
+                                botStats.avgConesAuto.mid += data.autoJson.cones.mid;
+                                botStats.avgConesAuto.low += data.autoJson.cones.low;
+                                botStats.avgConesTele.high += data.teleJson.cones.high;
+                                botStats.avgConesTele.mid += data.teleJson.cones.mid;
+                                botStats.avgConesTele.low += data.teleJson.cones.low;
+                                botStats.avgCubesAuto.high += data.autoJson.cubes.high;
+                                botStats.avgCubesAuto.mid += data.autoJson.cubes.mid;
+                                botStats.avgCubesAuto.low += data.autoJson.cubes.low;
+                                botStats.avgCubesTele.high += data.teleJson.cubes.high;
+                                botStats.avgCubesTele.mid += data.teleJson.cubes.mid;
+                                botStats.avgCubesTele.low += data.teleJson.cubes.low;
+                                botStats.avgCycles += data.teleJson.cones.high + data.teleJson.cones.mid + data.teleJson.cones.low +
+                                    data.teleJson.cubes.high + data.teleJson.cubes.mid + data.teleJson.cubes.low;
+                                botStats.charge += data.teleJson.onCharge ? 1 : 0;
+                                botStats.balance += data.teleJson.balance ? 1 : 0;
+                                botStats.autoCharge = botStats.autoCharge || data.autoJson.onCharge;
+                                botStats.autoBalance = botStats.autoBalance || data.autoJson.balance;
+                                botStats.autoMobility = botStats.autoMobility || data.mobility;
+                            }
+                            botStats.avgConesAuto.high /= results.length;
+                            botStats.avgConesAuto.mid /= results.length;
+                            botStats.avgConesAuto.low /= results.length;
+                            botStats.avgConesTele.high /= results.length;
+                            botStats.avgConesTele.mid /= results.length;
+                            botStats.avgConesTele.low /= results.length;
+                            botStats.avgCubesAuto.high /= results.length;
+                            botStats.avgCubesAuto.mid /= results.length;
+                            botStats.avgCubesAuto.low /= results.length;
+                            botStats.avgCubesTele.high /= results.length;
+                            botStats.avgCubesTele.mid /= results.length;
+                            botStats.avgCubesTele.low /= results.length;
+                            botStats.avgCycles /= results.length;
+                            botStats.charge /= results.length;
+                            botStats.balance /= results.length;
+                            resolve(botStats);
+                        }
+                        else {
+                            resolve({});
+                        }
+                        return [2];
+                    });
+                }); });
+            });
+            return [2, prom];
+        });
+    });
+}
+exports.getBotStats = getBotStats;
+function getBotNotes(teamNumber) {
+    return __awaiter(this, void 0, void 0, function () {
+        var prom;
+        var _this = this;
+        return __generator(this, function (_a) {
+            prom = new Promise(function (resolve, reject) {
+                con.query("SELECT * FROM matchData WHERE teamNumber=" + teamNumber, function (err, results, fields) { return __awaiter(_this, void 0, void 0, function () {
+                    var r, botData, i, data;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (err)
+                                    console.log(err);
+                                if (!(results.length > 0)) return [3, 2];
+                                r = [];
+                                return [4, getBotData(teamNumber)];
+                            case 1:
+                                botData = _a.sent();
+                                r.push(botData.autoJson.notes);
+                                r.push(botData.teleJson.notes);
+                                r.push(botData.botNote);
+                                for (i = 0; i < results.length; i++) {
+                                    data = new MatchData(results[i]);
+                                    r.push(data.autoJson.notes);
+                                    r.push(data.teleJson.notes);
+                                }
+                                resolve(r);
+                                return [3, 3];
+                            case 2:
+                                resolve([]);
+                                _a.label = 3;
+                            case 3: return [2];
+                        }
+                    });
+                }); });
+            });
+            return [2, prom];
+        });
+    });
+}
+exports.getBotNotes = getBotNotes;
 function addBotData(data) {
-    con.query("INSERT INTO matchData VALUES (" + data.teamNumber +
+    con.query("INSERT INTO botData VALUES (" + data.teamNumber +
+        ", \"" + JSON.stringify(data.autoJson).replaceAll("\"", "\\\"") +
+        "\", \"" + JSON.stringify(data.teleJson).replaceAll("\"", "\\\"") +
+        "\", " + data.mobility +
+        ", " + data.startingGrid +
         ", " + data.substation +
-        ", " + data.drivetrain +
-        ", " + data.autoBalance +
-        ", " + data.autoMobility +
-        ", " + data.autoDeliver +
-        ", \"" + data.autoNote +
-        "\", " + data.piecePreference +
-        ", " + data.firstPlacement +
-        ", " + data.secondPlacement +
-        ", " + data.cyclesPerMatch +
-        ", " + data.canScoreHigh +
-        ", " + data.canScoreMid +
-        ", " + data.canScoreLow +
+        ", " + data.cycleTime +
         ", " + data.scouter +
-        ")", function (err, results, fields) {
+        ", " + data.drivetrain +
+        ", \"" + data.botNote +
+        "\")", function (err, results, fields) {
         if (err)
             console.log(err);
     });
@@ -195,7 +355,7 @@ function getBotData(teamNumber) {
                         if (err)
                             console.log(err);
                         if (results.length > 0) {
-                            resolve(results[0]);
+                            resolve(new BotData(results[0]));
                         }
                         else {
                             resolve({});

@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.requestMatchData = exports.Stats = void 0;
 var request = require("request");
 var Stats = (function () {
@@ -12,7 +12,7 @@ function requestMatchData(matchNumber) {
     var prom = new Promise(function (resolve, reject) {
         request({
             headers: {
-                "Accept": "application/json"
+                "Accept": "application/json",
             },
             uri: "https://api.statbotics.io/v2/match/2023nyli2_qm" + matchNumber,
             method: "GET"

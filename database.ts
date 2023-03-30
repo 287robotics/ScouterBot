@@ -8,23 +8,44 @@ type TeamData = {
     rookieYear: number;
 };
 
-type BotData = {
+export class BotData {
     teamNumber: number;
+    autoJson: ModeData;
+    teleJson: ModeData;
+    mobility: boolean;
+    startingGrid: number;
     substation: number;
+    cycleTime: number;
+    scouter: number;
     drivetrain: number;
+    botNote: string;
+    constructor(row: mysql.RowDataPacket) {
+        this.teamNumber = row.teamNumber;
+        this.autoJson = JSON.parse(row.autoJson);
+        this.teleJson = JSON.parse(row.teleJson);
+        this.mobility = row.mobility;
+        this.startingGrid = row.startingGrid;
+        this.substation = row.substation;
+        this.cycleTime = row.cycleTime;
+        this.scouter = row.scouter;
+        this.drivetrain = row.drivetrain;
+        this.botNote = row.botNote;
+    }
+};
+
+export type BotStats = {
+    teamNumber: number;
+    avgConesAuto: GridData;
+    avgConesTele: GridData;
+    avgCubesAuto: GridData;
+    avgCubesTele: GridData;
+    avgCycles: number;
+    charge: number;
+    balance: number;
+    autoCharge: boolean;
     autoBalance: boolean;
     autoMobility: boolean;
-    autoDeliver: number;
-    autoNote: string;
-    piecePreference: number;
-    firstPlacement: number;
-    secondPlacement: number;
-    cyclesPerMatch: number;
-    canScoreHigh: boolean;
-    canScoreMid: boolean;
-    canScoreLow: boolean;
-    scouter: number;
-};
+}
 
 type GridData = {
     low: number;
@@ -41,7 +62,7 @@ type ModeData = {
     notes: string;
 }
 
-type MatchData = {
+export class MatchData {
     teamNumber: number;
     qualNumber: number;
     autoJson: ModeData;
@@ -51,6 +72,18 @@ type MatchData = {
     substation: number;
     cycleTime: number;
     scouter: number;
+
+    constructor(row: mysql.RowDataPacket) {
+        this.teamNumber = row.teamNumber;
+        this.qualNumber = row.qualNumber;
+        this.autoJson = JSON.parse(row.autoJson);
+        this.teleJson = JSON.parse(row.teleJson);
+        this.mobility = row.mobility;
+        this.startingGrid = row.startingGrid;
+        this.substation = row.substation;
+        this.cycleTime = row.cycleTime;
+        this.scouter = row.scouter;
+    }
 }
 
 let con = mysql.createConnection({
@@ -150,7 +183,7 @@ export async function getMatchData(teamNumber: number, qualNumber: number): Prom
         con.query("SELECT * FROM matchData WHERE teamNumber=" + teamNumber + " AND qualNumber=" + qualNumber, async (err, results, fields) => {
             if(err) console.log(err);
             if(results.length > 0) {
-                resolve(results[0] as MatchData);
+                resolve(new MatchData(results[0]));
             } else {
                 resolve({} as MatchData);
             }
@@ -159,23 +192,122 @@ export async function getMatchData(teamNumber: number, qualNumber: number): Prom
     return prom;
 }
 
+export async function getBotStats(teamNumber: number): Promise<BotStats> {
+    let prom = new Promise<BotStats>((resolve, reject) => {
+        con.query("SELECT * FROM matchData WHERE teamNumber=" + teamNumber, async (err, results, fields) => {
+            if(err) console.log(err);
+            if(results.length > 0) {
+                let botStats: BotStats = {
+                    teamNumber: teamNumber,
+                    avgConesAuto: {
+                        low: 0,
+                        mid: 0,
+                        high: 0
+                    },
+                    avgConesTele: {
+                        low: 0,
+                        mid: 0,
+                        high: 0
+                    },
+                    avgCubesAuto: {
+                        low: 0,
+                        mid: 0,
+                        high: 0
+                    },
+                    avgCubesTele: {
+                        low: 0,
+                        mid: 0,
+                        high: 0
+                    },
+                    avgCycles: 0,
+                    charge: 0,
+                    balance: 0,
+                    autoCharge: false,
+                    autoBalance: false,
+                    autoMobility: false
+                }
+                for(let i = 0; i < results.length; i++) {
+                    let data = new MatchData(results[i]);
+                    botStats.avgConesAuto.high += data.autoJson.cones.high;
+                    botStats.avgConesAuto.mid += data.autoJson.cones.mid;
+                    botStats.avgConesAuto.low += data.autoJson.cones.low;
+                    botStats.avgConesTele.high += data.teleJson.cones.high;
+                    botStats.avgConesTele.mid += data.teleJson.cones.mid;
+                    botStats.avgConesTele.low += data.teleJson.cones.low;
+                    botStats.avgCubesAuto.high += data.autoJson.cubes.high;
+                    botStats.avgCubesAuto.mid += data.autoJson.cubes.mid;
+                    botStats.avgCubesAuto.low += data.autoJson.cubes.low;
+                    botStats.avgCubesTele.high += data.teleJson.cubes.high;
+                    botStats.avgCubesTele.mid += data.teleJson.cubes.mid;
+                    botStats.avgCubesTele.low += data.teleJson.cubes.low;
+                    botStats.avgCycles += data.teleJson.cones.high + data.teleJson.cones.mid + data.teleJson.cones.low +
+                            data.teleJson.cubes.high + data.teleJson.cubes.mid + data.teleJson.cubes.low;
+                    botStats.charge += data.teleJson.onCharge ? 1 : 0;
+                    botStats.balance += data.teleJson.balance ? 1 : 0;
+                    botStats.autoCharge = botStats.autoCharge || data.autoJson.onCharge;
+                    botStats.autoBalance = botStats.autoBalance || data.autoJson.balance;
+                    botStats.autoMobility = botStats.autoMobility || data.mobility;
+                }
+                botStats.avgConesAuto.high /= results.length;
+                botStats.avgConesAuto.mid /= results.length;
+                botStats.avgConesAuto.low /= results.length;
+                botStats.avgConesTele.high /= results.length;
+                botStats.avgConesTele.mid /= results.length;
+                botStats.avgConesTele.low /= results.length;
+                botStats.avgCubesAuto.high /= results.length;
+                botStats.avgCubesAuto.mid /= results.length;
+                botStats.avgCubesAuto.low /= results.length;
+                botStats.avgCubesTele.high /= results.length;
+                botStats.avgCubesTele.mid /= results.length;
+                botStats.avgCubesTele.low /= results.length;
+                botStats.avgCycles /= results.length;
+                botStats.charge /= results.length;
+                botStats.balance /= results.length;
+                resolve(botStats);
+            } else {
+                resolve({} as BotStats);
+            }
+        });
+    });
+    return prom;
+}
+
+export async function getBotNotes(teamNumber: number): Promise<string[]> {
+    let prom = new Promise<string[]>((resolve, reject) => {
+        con.query("SELECT * FROM matchData WHERE teamNumber=" + teamNumber, async (err, results, fields) => {
+            if(err) console.log(err);
+            if(results.length > 0) {
+                let r: string[] = [];
+                let botData = await getBotData(teamNumber);
+                r.push(botData.autoJson.notes);
+                r.push(botData.teleJson.notes);
+                r.push(botData.botNote);
+                for(let i = 0; i < results.length; i++) {
+                    let data = new MatchData(results[i]);
+                    r.push(data.autoJson.notes);
+                    r.push(data.teleJson.notes);
+                }
+                resolve(r);
+            } else {
+                resolve([]);
+            }
+        });
+    });
+    return prom;
+}
+
 export function addBotData(data: BotData) {
-    con.query("INSERT INTO matchData VALUES (" + data.teamNumber + 
+    con.query("INSERT INTO botData VALUES (" + data.teamNumber + 
+    ", \"" + JSON.stringify(data.autoJson).replaceAll("\"", "\\\"") + 
+    "\", \"" + JSON.stringify(data.teleJson).replaceAll("\"", "\\\"") +
+    "\", " + data.mobility +
+    ", " + data.startingGrid +
     ", " + data.substation + 
-    ", " + data.drivetrain + 
-    ", " + data.autoBalance +
-    ", " + data.autoMobility +
-    ", " + data.autoDeliver +
-    ", \"" + data.autoNote + 
-    "\", " + data.piecePreference +
-    ", " + data.firstPlacement + 
-    ", " + data.secondPlacement + 
-    ", " + data.cyclesPerMatch + 
-    ", " + data.canScoreHigh + 
-    ", " + data.canScoreMid + 
-    ", " + data.canScoreLow +
-    ", " + data.scouter +  
-    ")", (err, results, fields) => {
+    ", " + data.cycleTime +
+    ", " + data.scouter + 
+    ", " + data.drivetrain +
+    ", \"" + data.botNote +
+    "\")", (err, results, fields) => {
         if(err) console.log(err);
     });
 }
@@ -190,7 +322,7 @@ export async function getBotData(teamNumber: number): Promise<BotData> {
         con.query("SELECT * FROM botData WHERE teamNumber=" + teamNumber, async (err, results, fields) => {
             if(err) console.log(err);
             if(results.length > 0) {
-                resolve(results[0] as BotData);
+                resolve(new BotData(results[0]));
             } else {
                 resolve({} as BotData);
             }

@@ -39,10 +39,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = exports.handleStringSelectInteraction = exports.handleButtonInteraction = exports.data = void 0;
 var discord = require("discord.js");
 var interactionHandler = require("../interactionHandler");
-var database = require("../database");
+var database_1 = require("../database");
 exports.data = new discord.SlashCommandBuilder()
-    .setName('scout')
-    .setDescription('piss your\'e pant AGIAN')
+    .setName('scoutpit')
+    .setDescription('piss your\'e pant')
     .addNumberOption(function (option) {
     return option.setName("teamnumber")
         .setDescription("HAHAHAHAAHAHAHAAAAAAAAAAAAAAAAAAAAAAAAA")
@@ -50,63 +50,18 @@ exports.data = new discord.SlashCommandBuilder()
 });
 function handleButtonInteraction(interaction) {
     return __awaiter(this, void 0, void 0, function () {
-        function updateConeCube(id) {
-            var rowBuilder = null;
-            interactionHandler.commandMessages[interaction.message.id].lastGamePieceId = id;
-            if (id.indexOf("cone") != -1) {
-                rowBuilder = discord.ActionRowBuilder.from(message.components[0]);
-                rows.push(rowBuilder, message.components[1], message.components[2]);
-            }
-            else {
-                rowBuilder = discord.ActionRowBuilder.from(message.components[1]);
-                rows.push(message.components[0], rowBuilder, message.components[2]);
-            }
-            if (message.components.length == 5) {
-                rows.push(message.components[3]);
-            }
-            interactionData[vars[id]] += 1;
-            if (interactionData[vars[id]] > 0) {
-                rowBuilder.components[indexes[id]].setStyle(discord.ButtonStyle.Success);
-            }
-            else {
-                rowBuilder.components[indexes[id]].setStyle(discord.ButtonStyle.Secondary);
-            }
-        }
-        var message, rows, selectRow, updateEmbed, interactionData, indexes, vars, lastGamePieceId, rowBuilder, rowBuilder, rowBuilder, rowBuilder, rowBuilder, data_1, rowBuilder, rowBuilder, rowBuilder, indexes_1, variableNames, rowBuilder, rowBuilder, rowBuilder, text, modal, newEmbed;
+        var message, interactionData, rows, selectRow, updateEmbed, rowBuilder, rowBuilder, rowBuilder, rowBuilder, rowBuilder, h_cone, m_cone, l_cone, modal, h_cone, m_cone, l_cone, modal, h_cone, m_cone, l_cone, modal, h_cone, m_cone, l_cone, modal, rowBuilder, rowBuilder, rowBuilder, rowBuilder, indexes, vals, rowBuilder, rowBuilder, indexes, variableNames, data_1, newEmbed;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    message = interaction["message"];
+                    message = interaction.message;
+                    interactionData = interactionHandler.interactionData[message.id];
                     rows = [];
                     selectRow = message.components[message.components.length - 1];
                     updateEmbed = true;
-                    interactionData = interactionHandler.interactionData[message.id];
-                    indexes = { "high_cone": 0, "mid_cone": 1, "low_cone": 2, "high_cube": 0, "mid_cube": 1, "low_cube": 2,
-                        "high_cone_a": 0, "mid_cone_a": 1, "low_cone_a": 2, "high_cube_a": 0, "mid_cube_a": 1, "low_cube_a": 2 };
-                    vars = { "high_cone": "highCone", "mid_cone": "midCone", "low_cone": "lowCone", "high_cube": "highCube", "mid_cube": "midCube", "low_cube": "lowCube",
-                        "high_cone_a": "highConeAuto", "mid_cone_a": "midConeAuto", "low_cone_a": "lowConeAuto", "high_cube_a": "highCubeAuto", "mid_cube_a": "midCubeAuto", "low_cube_a": "lowCubeAuto" };
-                    if (["high_cone", "mid_cone", "low_cone", "high_cube", "mid_cube", "low_cube",
-                        "high_cone_a", "mid_cone_a", "low_cone_a", "high_cube_a", "mid_cube_a", "low_cube_a"].indexOf(interaction.customId) != -1) {
-                        updateConeCube(interaction.customId);
-                    }
-                    if ((interaction.customId == "cycles_button_dec" || interaction.customId == "cycles_button_dec_a") && "lastGamePieceId") {
-                        lastGamePieceId = interactionHandler.commandMessages[message.id].lastGamePieceId;
-                        if (lastGamePieceId && interactionData[vars[lastGamePieceId]] > 0) {
-                            interactionData[vars[lastGamePieceId]] -= 2;
-                            updateConeCube(lastGamePieceId);
-                        }
-                        else {
-                            rows.push(message.components[0], message.components[1], message.components[2]);
-                            if (message.components.length == 5) {
-                                rows.push(message.components[3]);
-                            }
-                        }
-                    }
-                    if (interaction.customId == "cycles_button_dec_a") {
-                    }
                     if (interaction.customId == "mobility") {
-                        rows.push(message.components[0], message.components[1]);
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[2]);
+                        rows.push(message.components[0]);
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[1]);
                         if (!interactionData.mobility) {
                             interactionData.mobility = true;
                             rowBuilder.components[0].setStyle(discord.ButtonStyle.Success);
@@ -118,8 +73,8 @@ function handleButtonInteraction(interaction) {
                         rows.push(rowBuilder);
                     }
                     if (interaction.customId == "charge_station_u") {
-                        rows.push(message.components[0], message.components[1]);
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[2]);
+                        rows.push(message.components[0]);
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[1]);
                         if (!interactionData.chargeStation) {
                             interactionData.chargeStation = true;
                             rowBuilder.components[1].setStyle(discord.ButtonStyle.Success);
@@ -133,8 +88,8 @@ function handleButtonInteraction(interaction) {
                         rows.push(rowBuilder);
                     }
                     if (interaction.customId == "charge_station_b") {
-                        rows.push(message.components[0], message.components[1]);
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[2]);
+                        rows.push(message.components[0]);
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[1]);
                         if (!interactionData.chargeStationBalance) {
                             interactionData.chargeStationBalance = true;
                             rowBuilder.components[2].setStyle(discord.ButtonStyle.Success);
@@ -148,8 +103,8 @@ function handleButtonInteraction(interaction) {
                         rows.push(rowBuilder);
                     }
                     if (interaction.customId == "balance_tu") {
-                        rows.push(message.components[0], message.components[1]);
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[2]);
+                        rows.push(message.components[0]);
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[1]);
                         if (!interactionData.endgameChargeStation) {
                             interactionData.endgameChargeStation = true;
                             rowBuilder.components[0].setStyle(discord.ButtonStyle.Success);
@@ -160,11 +115,11 @@ function handleButtonInteraction(interaction) {
                             interactionData.endgameChargeStationBalanced = false;
                             rowBuilder.components[1].setStyle(discord.ButtonStyle.Danger);
                         }
-                        rows.push(rowBuilder, message.components[3]);
+                        rows.push(rowBuilder, message.components[2]);
                     }
                     if (interaction.customId == "balance_tb") {
-                        rows.push(message.components[0], message.components[1]);
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[2]);
+                        rows.push(message.components[0]);
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[1]);
                         if (!interactionData.endgameChargeStationBalanced) {
                             interactionData.endgameChargeStationBalanced = true;
                             rowBuilder.components[1].setStyle(discord.ButtonStyle.Success);
@@ -175,18 +130,185 @@ function handleButtonInteraction(interaction) {
                             interactionData.endgameChargeStationBalanced = false;
                             rowBuilder.components[1].setStyle(discord.ButtonStyle.Danger);
                         }
-                        rows.push(rowBuilder, message.components[3]);
+                        rows.push(rowBuilder, message.components[2]);
                     }
-                    if (!(interaction.customId == "submit_button")) return [3, 3];
-                    return [4, interaction.update({ content: "" })];
+                    if (!(interaction.customId == "high_cone")) return [3, 2];
+                    h_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("high_cones")
+                        .setLabel("High");
+                    m_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("mid_cones")
+                        .setLabel("Middle");
+                    l_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("low_cones")
+                        .setLabel("Low");
+                    modal = new discord.ModalBuilder()
+                        .setCustomId("set_cone_" + message.channelId + "_" + message.id)
+                        .setTitle("Input Cones")
+                        .addComponents(new discord.ActionRowBuilder().addComponents(h_cone), new discord.ActionRowBuilder().addComponents(m_cone), new discord.ActionRowBuilder().addComponents(l_cone));
+                    return [4, interaction.showModal(modal)];
                 case 1:
                     _a.sent();
-                    return [4, message.delete()];
+                    updateEmbed = false;
+                    _a.label = 2;
                 case 2:
+                    if (!(interaction.customId == "high_cube")) return [3, 4];
+                    h_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("high_cubes")
+                        .setLabel("High");
+                    m_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("mid_cubes")
+                        .setLabel("Middle");
+                    l_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("low_cubes")
+                        .setLabel("Low");
+                    modal = new discord.ModalBuilder()
+                        .setCustomId("set_cube_" + message.channelId + "_" + message.id)
+                        .setTitle("Input Cube")
+                        .addComponents(new discord.ActionRowBuilder().addComponents(h_cone), new discord.ActionRowBuilder().addComponents(m_cone), new discord.ActionRowBuilder().addComponents(l_cone));
+                    return [4, interaction.showModal(modal)];
+                case 3:
                     _a.sent();
+                    updateEmbed = false;
+                    _a.label = 4;
+                case 4:
+                    if (!(interaction.customId == "high_cube_a")) return [3, 6];
+                    h_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("high_cubes")
+                        .setLabel("High");
+                    m_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("mid_cubes")
+                        .setLabel("Middle");
+                    l_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("low_cubes")
+                        .setLabel("Low");
+                    modal = new discord.ModalBuilder()
+                        .setCustomId("aset_cube_" + message.channelId + "_" + message.id)
+                        .setTitle("Input Cube")
+                        .addComponents(new discord.ActionRowBuilder().addComponents(h_cone), new discord.ActionRowBuilder().addComponents(m_cone), new discord.ActionRowBuilder().addComponents(l_cone));
+                    return [4, interaction.showModal(modal)];
+                case 5:
+                    _a.sent();
+                    updateEmbed = false;
+                    _a.label = 6;
+                case 6:
+                    if (!(interaction.customId == "high_cone_a")) return [3, 8];
+                    h_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("high_cones")
+                        .setLabel("High");
+                    m_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("mid_cones")
+                        .setLabel("Middle");
+                    l_cone = new discord.TextInputBuilder().setStyle(discord.TextInputStyle.Short).setMaxLength(2).setMinLength(0)
+                        .setRequired(false)
+                        .setCustomId("low_cones")
+                        .setLabel("Low");
+                    modal = new discord.ModalBuilder()
+                        .setCustomId("aset_cone_" + message.channelId + "_" + message.id)
+                        .setTitle("Input Cone")
+                        .addComponents(new discord.ActionRowBuilder().addComponents(h_cone), new discord.ActionRowBuilder().addComponents(m_cone), new discord.ActionRowBuilder().addComponents(l_cone));
+                    return [4, interaction.showModal(modal)];
+                case 7:
+                    _a.sent();
+                    updateEmbed = false;
+                    _a.label = 8;
+                case 8:
+                    if (interaction.customId == "pre_cone") {
+                        rows.push(message.components[0]);
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[1]);
+                        if (!interactionData.preloadedCone) {
+                            interactionData.preloadedCone = true;
+                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Success);
+                            interactionData.preloadedCube = false;
+                            rowBuilder.components[1].setStyle(discord.ButtonStyle.Danger);
+                        }
+                        else {
+                            interactionData.preloadedCone = false;
+                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
+                        }
+                        rows.push(rowBuilder, message.components[2]);
+                    }
+                    if (interaction.customId == "pre_cube") {
+                        rows.push(message.components[0]);
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[1]);
+                        if (!interactionData.preloadedCube) {
+                            interactionData.preloadedCube = true;
+                            rowBuilder.components[1].setStyle(discord.ButtonStyle.Success);
+                            interactionData.preloadedCone = false;
+                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
+                        }
+                        else {
+                            interactionData.preloadedCube = false;
+                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
+                        }
+                        rows.push(rowBuilder, message.components[2]);
+                    }
+                    if (interaction.customId == "playing_station_single") {
+                        rows.push(message.components[0], message.components[1]);
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[2]);
+                        if (!interactionData.playerStationSingle) {
+                            interactionData.playerStationSingle = true;
+                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Success);
+                        }
+                        else {
+                            interactionData.playerStationSingle = false;
+                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
+                        }
+                        rows.push(rowBuilder);
+                    }
+                    if (interaction.customId == "playing_station_double") {
+                        rows.push(message.components[0], message.components[1]);
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[2]);
+                        if (!interactionData.playerStationDouble) {
+                            interactionData.playerStationDouble = true;
+                            rowBuilder.components[1].setStyle(discord.ButtonStyle.Success);
+                        }
+                        else {
+                            interactionData.playerStationDouble = false;
+                            rowBuilder.components[1].setStyle(discord.ButtonStyle.Danger);
+                        }
+                        rows.push(rowBuilder);
+                    }
+                    if (["tank", "swerve", "other"].indexOf(interaction.customId) != -1) {
+                        rows.push(message.components[0], message.components[1]);
+                        indexes = { "tank": 1, "swerve": 0, "other": 2 };
+                        vals = { "tank": 0, "swerve": 1, "other": 2 };
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[2]);
+                        rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
+                        rowBuilder.components[1].setStyle(discord.ButtonStyle.Danger);
+                        rowBuilder.components[2].setStyle(discord.ButtonStyle.Danger);
+                        rowBuilder.components[indexes[interaction.customId]].setStyle(discord.ButtonStyle.Success);
+                        interactionData.drivetrain = vals[interaction.customId];
+                        rows.push(rowBuilder);
+                    }
+                    if (["top_pos", "mid_pos", "low_pos"].indexOf(interaction.customId) != -1) {
+                        rowBuilder = discord.ActionRowBuilder.from(message.components[0]);
+                        rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
+                        rowBuilder.components[1].setStyle(discord.ButtonStyle.Danger);
+                        rowBuilder.components[2].setStyle(discord.ButtonStyle.Danger);
+                        indexes = { "top_pos": 0, "mid_pos": 1, "low_pos": 2 };
+                        variableNames = { "top_pos": "startTop", "mid_pos": "startMid", "low_pos": "startLow" };
+                        rowBuilder.components[indexes[interaction.customId]].setStyle(discord.ButtonStyle.Success);
+                        interactionData.top_pos = false;
+                        interactionData.mid_pos = false;
+                        interactionData.low_pos = false;
+                        interactionData[variableNames[interaction.customId]] = true;
+                        rows.push(rowBuilder, message.components[1], message.components[2]);
+                    }
+                    if (!(interaction.customId == "submit_button")) return [3, 11];
                     data_1 = {
                         teamNumber: interactionData.teamNumber,
-                        qualNumber: interactionData.matchNumber,
                         autoJson: {
                             cubes: {
                                 low: interactionData.lowCubeAuto,
@@ -223,133 +345,33 @@ function handleButtonInteraction(interaction) {
                         startingGrid: interactionData.startTop ? 0 : (interactionData.startMiddle ? 1 : 2),
                         substation: (interactionData.playerStationSingle ? 1 : 0) + (interactionData.playerStationDouble ? 2 : 0),
                         cycleTime: 120 / (interactionData.cycles + 1),
-                        scouter: 82734023
+                        scouter: 82734023,
+                        drivetrain: interactionData.drivetrain,
+                        botNote: interactionData.miscNotes
                     };
-                    database.addMatchRecord(data_1);
-                    return [2];
-                case 3:
-                    if (interaction.customId == "playing_station_single") {
-                        rows.push(message.components[0], message.components[1], message.components[2]);
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[3]);
-                        if (!interactionData.playerStationSingle) {
-                            interactionData.playerStationSingle = true;
-                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Success);
-                        }
-                        else {
-                            interactionData.playerStationSingle = false;
-                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
-                        }
-                        rows.push(rowBuilder);
-                    }
-                    if (interaction.customId == "playing_station_double") {
-                        rows.push(message.components[0], message.components[1], message.components[2]);
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[3]);
-                        if (!interactionData.playerStationDouble) {
-                            interactionData.playerStationDouble = true;
-                            rowBuilder.components[1].setStyle(discord.ButtonStyle.Success);
-                        }
-                        else {
-                            interactionData.playerStationDouble = false;
-                            rowBuilder.components[1].setStyle(discord.ButtonStyle.Danger);
-                        }
-                        rows.push(rowBuilder);
-                    }
-                    if (["top_pos", "mid_pos", "low_pos"].indexOf(interaction.customId) != -1) {
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[1]);
-                        rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
-                        rowBuilder.components[1].setStyle(discord.ButtonStyle.Danger);
-                        rowBuilder.components[2].setStyle(discord.ButtonStyle.Danger);
-                        indexes_1 = { "top_pos": 0, "mid_pos": 1, "low_pos": 2 };
-                        variableNames = { "top_pos": "startTop", "mid_pos": "startMid", "low_pos": "startLow" };
-                        rowBuilder.components[indexes_1[interaction.customId]].setStyle(discord.ButtonStyle.Success);
-                        interactionData.top_pos = false;
-                        interactionData.mid_pos = false;
-                        interactionData.low_pos = false;
-                        interactionData[variableNames[interaction.customId]] = true;
-                        rows.push(message.components[0], rowBuilder, message.components[2]);
-                    }
-                    if (interaction.customId == "qual") {
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[0]);
-                        if (!interactionData.quals) {
-                            interactionData.quals = true;
-                            rowBuilder.components[1].setStyle(discord.ButtonStyle.Success);
-                        }
-                        else {
-                            interactionData.quals = false;
-                            rowBuilder.components[1].setStyle(discord.ButtonStyle.Danger);
-                        }
-                        rows.push(rowBuilder, message.components[1], message.components[2]);
-                    }
-                    if (interaction.customId == "pre_cone") {
-                        rows.push(message.components[0], message.components[1]);
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[2]);
-                        if (!interactionData.preloadedCone) {
-                            interactionData.preloadedCone = true;
-                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Success);
-                            interactionData.preloadedCube = false;
-                            rowBuilder.components[1].setStyle(discord.ButtonStyle.Danger);
-                        }
-                        else {
-                            interactionData.preloadedCone = false;
-                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
-                        }
-                        rows.push(rowBuilder);
-                    }
-                    if (interaction.customId == "pre_cube") {
-                        rows.push(message.components[0], message.components[1]);
-                        rowBuilder = discord.ActionRowBuilder.from(message.components[2]);
-                        if (!interactionData.preloadedCube) {
-                            interactionData.preloadedCube = true;
-                            rowBuilder.components[1].setStyle(discord.ButtonStyle.Success);
-                            interactionData.preloadedCone = false;
-                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
-                        }
-                        else {
-                            interactionData.preloadedCube = false;
-                            rowBuilder.components[0].setStyle(discord.ButtonStyle.Danger);
-                        }
-                        rows.push(rowBuilder);
-                    }
-                    if (!(interaction.customId == "match_number")) return [3, 5];
-                    text = new discord.TextInputBuilder()
-                        .setStyle(discord.TextInputStyle.Short)
-                        .setLabel("Match Number")
-                        .setMinLength(1)
-                        .setMaxLength(2)
-                        .setCustomId("set_match_number");
-                    modal = new discord.ModalBuilder()
-                        .setCustomId("match_number_" + message.channelId + "_" + message.id)
-                        .setTitle("Input")
-                        .addComponents(new discord.ActionRowBuilder().addComponents(text));
-                    return [4, interaction.showModal(modal)];
-                case 4:
-                    _a.sent();
-                    updateEmbed = false;
-                    _a.label = 5;
-                case 5:
-                    if (!(interaction.customId == "discard_button")) return [3, 8];
+                    (0, database_1.addBotData)(data_1);
                     return [4, interaction.update({ content: "" })];
-                case 6:
+                case 9:
                     _a.sent();
                     return [4, message.delete()];
-                case 7:
+                case 10:
                     _a.sent();
-                    _a.label = 8;
-                case 8:
+                    return [2];
+                case 11:
                     rows.push(selectRow);
-                    if (!updateEmbed) return [3, 12];
+                    if (!updateEmbed) return [3, 15];
                     return [4, interaction.deferUpdate()];
-                case 9:
+                case 12:
                     _a.sent();
                     newEmbed = discord.EmbedBuilder.from(message.embeds[0]);
                     return [4, interactionHandler.applyEmbedEdit(newEmbed, interactionData)];
-                case 10:
+                case 13:
                     _a.sent();
                     return [4, interaction.editReply({ content: "", embeds: [newEmbed], components: rows })];
-                case 11:
+                case 14:
                     _a.sent();
-                    _a.label = 12;
-                case 12: return [2];
+                    _a.label = 15;
+                case 15: return [2];
             }
         });
     });
@@ -359,19 +381,13 @@ function handleStringSelectInteraction(interaction) {
     return __awaiter(this, void 0, void 0, function () {
         function constructButton(id, label, key) {
             var style = discord.ButtonStyle.Secondary;
-            if (interactionData[key] > 0) {
-                style = discord.ButtonStyle.Success;
-            }
             return new discord.ButtonBuilder().setCustomId(id).setLabel(label).setStyle(style);
         }
         function constructButton(id, label, key) {
             var style = discord.ButtonStyle.Secondary;
-            if (interactionData[key] > 0) {
-                style = discord.ButtonStyle.Success;
-            }
             return new discord.ButtonBuilder().setCustomId(id).setLabel(label).setStyle(style);
         }
-        var message, selectRow, selectMenu, interactionData, i, j, rows, updateInteraction, value, newEmbed, coneBuilder, cubeBuilder, endgameBuilder, playerStationBuilder, builder, positionBuilder, preloadRow, coneBuilder, cubeBuilder, autoBuilder, auto, misc, tele, modal, row, label, i;
+        var message, selectRow, selectMenu, interactionData, i, j, rows, updateInteraction, value, newEmbed, coneBuilder, endgameBuilder, playerStationBuilder, positionBuilder, preloadRow, driveTrainRow, coneBuilder, autoBuilder, auto, misc, tele, modal, row, label, i;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -392,19 +408,12 @@ function handleStringSelectInteraction(interaction) {
                     updateInteraction = true;
                     value = interaction.values[0];
                     newEmbed = discord.EmbedBuilder.from(message.embeds[0]);
-                    console.log(message.id);
                     if (!(value == "game_piece")) return [3, 1];
                     coneBuilder = new discord.ActionRowBuilder();
-                    cubeBuilder = new discord.ActionRowBuilder();
                     endgameBuilder = new discord.ActionRowBuilder();
                     playerStationBuilder = new discord.ActionRowBuilder();
-                    coneBuilder.addComponents(constructButton("high_cone", "High Cone", "highCone"));
-                    coneBuilder.addComponents(constructButton("mid_cone", "Mid Cone", "midCone"));
-                    coneBuilder.addComponents(constructButton("low_cone", "Low Cone", "lowCone"));
-                    cubeBuilder.addComponents(constructButton("high_cube", "High Cube", "highCube"));
-                    cubeBuilder.addComponents(constructButton("mid_cube", "Mid Cube", "midCube"));
-                    cubeBuilder.addComponents(constructButton("low_cube", "Low Cube", "lowCone"));
-                    cubeBuilder.addComponents(new discord.ButtonBuilder().setCustomId("cycles_button_dec").setStyle(discord.ButtonStyle.Danger).setLabel("-1 Last Button"));
+                    coneBuilder.addComponents(constructButton("high_cone", "Cones", ""));
+                    coneBuilder.addComponents(constructButton("high_cube", "Cubes", ""));
                     endgameBuilder.addComponents(new discord.ButtonBuilder().setCustomId("balance_tu").setLabel("Charge Station")
                         .setStyle(interactionData.endgameChargeStation ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger), new discord.ButtonBuilder()
                         .setCustomId("balance_tb").setLabel("Balanced Station")
@@ -412,14 +421,11 @@ function handleStringSelectInteraction(interaction) {
                     playerStationBuilder.addComponents(new discord.ButtonBuilder().setCustomId("playing_station_single").setLabel("Single Player Station")
                         .setStyle(interactionData.playerStationSingle ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger), new discord.ButtonBuilder().setCustomId("playing_station_double").setLabel("Playing Station Double")
                         .setStyle(interactionData.playerStationDouble ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger));
-                    rows.push(coneBuilder, cubeBuilder, endgameBuilder, playerStationBuilder);
+                    rows.push(coneBuilder, endgameBuilder, playerStationBuilder);
                     newEmbed.setFooter({ text: "Editing game piece data." });
                     return [3, 6];
                 case 1:
                     if (!(value == "game_data")) return [3, 2];
-                    builder = new discord.ActionRowBuilder()
-                        .addComponents(new discord.ButtonBuilder().setLabel("Set Match Number").setCustomId("match_number").setStyle(discord.ButtonStyle.Secondary), new discord.ButtonBuilder().setLabel("Qualification").setCustomId("qual")
-                        .setStyle(interactionData.quals ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger));
                     positionBuilder = new discord.ActionRowBuilder()
                         .addComponents(new discord.ButtonBuilder().setLabel("Top").setCustomId("top_pos")
                         .setStyle(interactionData.startTop ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger), new discord.ButtonBuilder().setLabel("Middle").setCustomId("mid_pos")
@@ -429,21 +435,20 @@ function handleStringSelectInteraction(interaction) {
                         .addComponents(new discord.ButtonBuilder().setLabel("Preloaded Cone").setCustomId("pre_cone")
                         .setStyle(interactionData.preloadedCone ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger), new discord.ButtonBuilder().setLabel("Preloaded Cube").setCustomId("pre_cube")
                         .setStyle(interactionData.preloadedCube ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger));
-                    rows.push(builder, positionBuilder, preloadRow);
+                    driveTrainRow = new discord.ActionRowBuilder()
+                        .addComponents(new discord.ButtonBuilder().setLabel("Swerve").setCustomId("swerve")
+                        .setStyle(interactionData.drivetrain == 1 ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger), new discord.ButtonBuilder().setLabel("Tank").setCustomId("tank")
+                        .setStyle(interactionData.drivetrain == 0 ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger), new discord.ButtonBuilder().setLabel("Other").setCustomId("other")
+                        .setStyle(interactionData.drivetrain == 2 ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger));
+                    rows.push(positionBuilder, preloadRow, driveTrainRow);
                     newEmbed.setFooter({ text: "Editing game data." });
                     return [3, 6];
                 case 2:
                     if (!(value == "autonomous")) return [3, 3];
                     coneBuilder = new discord.ActionRowBuilder();
-                    cubeBuilder = new discord.ActionRowBuilder();
                     autoBuilder = new discord.ActionRowBuilder();
-                    coneBuilder.addComponents(constructButton("high_cone_a", "High Cone", "highConeAuto"));
-                    coneBuilder.addComponents(constructButton("mid_cone_a", "Mid Cone", "midConeAuto"));
-                    coneBuilder.addComponents(constructButton("low_cone_a", "Low Cone", "lowConeAuto"));
-                    cubeBuilder.addComponents(constructButton("high_cube_a", "High Cube", "highCubeAuto"));
-                    cubeBuilder.addComponents(constructButton("mid_cube_a", "Mid Cube", "midCubeAuto"));
-                    cubeBuilder.addComponents(constructButton("low_cube_a", "Low Cube", "lowConeAuto"));
-                    coneBuilder.addComponents(new discord.ButtonBuilder().setCustomId("cycles_button_dec_a").setStyle(discord.ButtonStyle.Danger).setLabel("-1 Last Button"));
+                    coneBuilder.addComponents(constructButton("high_cone_a", "Cone", "highConeAuto"));
+                    coneBuilder.addComponents(constructButton("high_cube_a", "Cube", "midConeAuto"));
                     autoBuilder.addComponents(new discord.ButtonBuilder().setCustomId("mobility")
                         .setStyle(interactionData.mobility ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger)
                         .setLabel("Mobility"));
@@ -453,7 +458,7 @@ function handleStringSelectInteraction(interaction) {
                     autoBuilder.addComponents(new discord.ButtonBuilder().setCustomId("charge_station_b")
                         .setStyle(interactionData.chargeStationBalance ? discord.ButtonStyle.Success : discord.ButtonStyle.Danger)
                         .setLabel("Balanced Station"));
-                    rows.push(coneBuilder, cubeBuilder, autoBuilder);
+                    rows.push(coneBuilder, autoBuilder);
                     newEmbed.setFooter({ text: "Editing autonomous data." });
                     return [3, 6];
                 case 3:
@@ -496,9 +501,7 @@ function handleStringSelectInteraction(interaction) {
                     return [3, 6];
                 case 5:
                     if (value == "submit") {
-                        row = new discord.ActionRowBuilder().addComponents(new discord.ButtonBuilder().setCustomId("submit_button").setLabel("Confirm")
-                            .setStyle(discord.ButtonStyle.Success), new discord.ButtonBuilder().setCustomId("discard_button").setLabel("Discard")
-                            .setStyle(discord.ButtonStyle.Danger));
+                        row = new discord.ActionRowBuilder().addComponents(new discord.ButtonBuilder().setCustomId("submit_button").setLabel("Confirm").setStyle(discord.ButtonStyle.Success));
                         rows.push(row);
                     }
                     _a.label = 6;
@@ -510,16 +513,17 @@ function handleStringSelectInteraction(interaction) {
                             break;
                         }
                     }
+                    rows.push(selectRow);
                     selectMenu.data.placeholder = label;
-                    if (!updateInteraction) return [3, 8];
-                    return [4, interaction.update({ content: "" })];
+                    if (!updateInteraction) return [3, 9];
+                    return [4, interaction.deferUpdate()];
                 case 7:
                     _a.sent();
-                    _a.label = 8;
+                    return [4, interaction.editReply({ embeds: [newEmbed], components: rows })];
                 case 8:
-                    rows.push(selectRow);
-                    message.edit({ embeds: [newEmbed], components: rows });
-                    return [2];
+                    _a.sent();
+                    _a.label = 9;
+                case 9: return [2];
             }
         });
     });
@@ -559,7 +563,7 @@ function execute(interaction) {
                         description: "Submit information",
                         value: "submit"
                     }));
-                    if (!(interaction.channel != null && !interaction.channel.isDMBased())) return [3, 4];
+                    if (!(interaction.channel != null && !interaction.channel.isDMBased())) return [3, 3];
                     return [4, interaction.deferReply({ ephemeral: true })];
                 case 1:
                     _a.sent();
@@ -567,26 +571,24 @@ function execute(interaction) {
                 case 2:
                     message = _a.sent();
                     interactionHandler.commandMessages[message.id] = {};
-                    interactionHandler.commandMessages[message.id].command = "scout";
+                    interactionHandler.commandMessages[message.id].command = "scoutPit";
                     interactionHandler.doDmInit(message, teamNumber, Number(interaction.user.id));
-                    return [4, interaction.editReply({ content: "Scout sheet has been sent to your dm" })];
-                case 3:
-                    _a.sent();
-                    return [3, 8];
-                case 4: return [4, interaction.deferReply({ ephemeral: true })];
-                case 5:
+                    interaction.editReply({ content: "Scout sheet has been sent to your dm" });
+                    return [3, 7];
+                case 3: return [4, interaction.deferReply({ ephemeral: true })];
+                case 4:
                     _a.sent();
                     return [4, interaction.user.send({ embeds: [embed], components: [row] })];
-                case 6:
+                case 5:
                     message = _a.sent();
                     interactionHandler.commandMessages[message.id] = {};
-                    interactionHandler.commandMessages[message.id].command = "scout";
+                    interactionHandler.commandMessages[message.id].command = "scoutPit";
                     interactionHandler.doDmInit(message, teamNumber, Number(interaction.user.id));
                     return [4, interaction.deleteReply()];
-                case 7:
+                case 6:
                     _a.sent();
-                    _a.label = 8;
-                case 8: return [2];
+                    _a.label = 7;
+                case 7: return [2];
             }
         });
     });
